@@ -28,6 +28,11 @@ e.g.,
 The file `translations.properties` is a default translation file that’ll be used for any Locale that doesn’t have a
 specific translations file.
 
+### Uere you can see an example of the application's behavior.
+
+https://github.com/fredpena/vaadin-i18n/assets/5680906/64db0ece-6d4b-45e2-a024-f73975ce3732
+
+
 ## Running the application
 
 The project is a standard Maven project. To run it from the command line, tab mvnw (Windows), or ./mvnw (Mac & Linux),
