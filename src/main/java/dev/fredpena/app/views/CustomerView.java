@@ -1,6 +1,7 @@
 package dev.fredpena.app.views;
 
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.HasLabel;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -22,15 +23,14 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
-import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
-@PageTitle(TranslationConstant.TITLE_PAGE_CUSTOMER)
 @Route(value = "customer", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
-public class CustomerView extends VerticalLayout implements LocaleChangeObserver {
+public class CustomerView extends VerticalLayout implements LocaleChangeObserver, HasDynamicTitle {
 
     private final TextField firstName = new TextField();
     private final TextField lastName = new TextField();
@@ -44,6 +44,7 @@ public class CustomerView extends VerticalLayout implements LocaleChangeObserver
     private final Button delete = new Button();
     private final Button cancel = new Button();
     private final Button save = new Button();
+
 
     public CustomerView() {
 
@@ -63,18 +64,18 @@ public class CustomerView extends VerticalLayout implements LocaleChangeObserver
     }
 
     private void saveOrUpdate(ClickEvent<Button> buttonClickEvent) {
+        var confirmDialog = new ConfirmDialog();
+        confirmDialog.setHeader(getTranslation(TranslationConstant.CONFIRM_DIALOG_UNSAVED_CHANGES));
+        confirmDialog.setText(getTranslation(TranslationConstant.CONFIRM_DIALOG_DISCARD_MESSAGE));
 
-            var confirmDialog = new ConfirmDialog();
-            confirmDialog.setHeader(getTranslation(TranslationConstant.CONFIRM_DIALOG_UNSAVED_CHANGES));
-            confirmDialog.setText(getTranslation(TranslationConstant.CONFIRM_DIALOG_DISCARD_MESSAGE));
+        confirmDialog.setRejectable(true);
+        confirmDialog.setRejectText(getTranslation(TranslationConstant.CONFIRM_DIALOG_DISCARD));
 
-            confirmDialog.setRejectable(true);
-            confirmDialog.setRejectText(getTranslation(TranslationConstant.CONFIRM_DIALOG_DISCARD));
+        confirmDialog.setConfirmText(getTranslation(TranslationConstant.CONFIRM_DIALOG_CONTINUE));
+        confirmDialog.addConfirmListener(event -> notificationSuccess(getTranslation(TranslationConstant.CONFIRM_DIALOG_TRANSACTION_SUCCESSFUL)));
 
-            confirmDialog.setConfirmText(getTranslation(TranslationConstant.CONFIRM_DIALOG_CONTINUE));
-            confirmDialog.addConfirmListener(event -> notificationSuccess(getTranslation(TranslationConstant.CONFIRM_DIALOG_TRANSACTION_SUCCESSFUL)));
+        confirmDialog.open();
 
-            confirmDialog.open();
     }
 
     private void delete(ClickEvent<Button> buttonClickEvent) {
@@ -136,7 +137,18 @@ public class CustomerView extends VerticalLayout implements LocaleChangeObserver
         delete.setText(getTranslation(TranslationConstant.BUTTON_DELETE));
         cancel.setText(getTranslation(TranslationConstant.BUTTON_CANCEL));
         save.setText(getTranslation(TranslationConstant.BUTTON_SAVE));
+    }
 
+    @Override
+    public String getPageTitle() {
+        return getTranslation(TranslationConstant.TITLE_PAGE_CUSTOMER);
+    }
+
+    public static void notificationError(String msg) {
+        final Notification notification = new Notification();
+        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+
+        notification(notification, msg);
     }
 
     public static void notificationSuccess(String msg) {
@@ -144,6 +156,18 @@ public class CustomerView extends VerticalLayout implements LocaleChangeObserver
         notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 
         notification(notification, msg);
+    }
+
+    public static void notificationError(ValidationException validationException) {
+        final Notification notification = new Notification();
+        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+
+        validationException.getFieldValidationErrors().forEach(err -> err.getMessage().ifPresent(msg2 -> {
+            String label = ((HasLabel) err.getBinding().getField()).getLabel();
+
+            notificationError(label != null ? label + " -> " + msg2 : msg2);
+        }));
+
     }
 
     private static void notification(Notification notification, String msg) {
@@ -163,4 +187,6 @@ public class CustomerView extends VerticalLayout implements LocaleChangeObserver
         notification.add(layout);
         notification.open();
     }
+
+
 }

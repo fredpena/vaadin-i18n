@@ -3,10 +3,30 @@
 > The goal of this project is to provide examples of how we can integrate i18n with Vaadin Flow quickly and easily,
 > without any additional configuration.
 
-> In this demonstration, you can observe how we can switch between 4 languages: **English**, **Spanish**, **Finnish**, and **French**.
-> The translations to Finnish and French have been made possible thanks to ChatGPT. This project illustrates the ease with
+> In this demonstration, you can observe how we can switch between 4 languages: **English**, **Spanish**, **Finnish**,
+> and **French**.
+> The translations to Finnish and French have been made possible thanks to ChatGPT. This project illustrates the ease
+> with
 > which we can integrate multiple languages using Vaadin Flow, highlighting the functionality of dynamic language
 > switching without the need for additional configurations.
+
+Before proceeding, it is recommended to read
+the [documentation](https://vaadin.com/docs/latest/advanced/i18n-localization#provider-sample-for-translation) and
+understand how i18n works in Vaadin. In this
+implementation, we are using the `LocaleChangeObserver` observer to receive events related to language changes. This
+approach allows us to dynamically manage language settings and adapt the user interface according to user preferences.
+
+To use localization and translation strings, the application needs only to have the translation properties available on
+the classpath under the directory, `vaadin-i18n` with the filename prefix, `translations`.
+e.g.,
+
+- `src/main/resources/vaadin-i18n/translations.properties`
+- `src/main/resources/vaadin-i18n/translations_es.properties`
+- `src/main/resources/vaadin-i18n/translations_fi.properties`
+- `src/main/resources/vaadin-i18n/translations_fr.properties`
+
+The file `translations.properties` is a default translation file that’ll be used for any Locale that doesn’t have a
+specific translations file.
 
 ## Running the application
 
@@ -85,7 +105,6 @@ docker run -p 37186:37186 vaadin-i18n-app:latest
 
 ## Useful links
 
-- Read i18n [documentation](https://vaadin.com/docs/latest/advanced/i18n-localization#provider-sample-for-translation)
 - Read the documentation at [vaadin.com/docs](https://vaadin.com/docs).
 - Follow the tutorial at [vaadin.com/docs/latest/tutorial/overview](https://vaadin.com/docs/latest/tutorial/overview).
 - Create new projects at [start.vaadin.com](https://start.vaadin.com/).

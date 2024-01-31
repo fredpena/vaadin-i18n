@@ -20,6 +20,7 @@ import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.vaadin.lineawesome.LineAwesomeIcon;
@@ -129,9 +130,12 @@ public class MainLayout extends AppLayout implements LocaleChangeObserver {
     }
 
     private String getCurrentPageTitle() {
+        if (getContent() instanceof HasDynamicTitle title) {
+            return title.getPageTitle();
+        }
         PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
 
-        return title == null ? "" : title.value();
+        return title == null ? "" : getTranslation(title.value());
     }
 
     @Override
@@ -140,7 +144,7 @@ public class MainLayout extends AppLayout implements LocaleChangeObserver {
 
         share.text().setText(getTranslation(TranslationConstant.TRANSLATION_LANGUAGE));
 
-        viewTitle.setText(getTranslation(getCurrentPageTitle()));
+        viewTitle.setText(getCurrentPageTitle());
     }
 
     private static MenuItemComponent createIconItem(HasMenuItems menu, VaadinIcon iconName, String label, String ariaLabel) {
@@ -154,8 +158,6 @@ public class MainLayout extends AppLayout implements LocaleChangeObserver {
 
     private static MenuItemComponent createIconItem(HasMenuItems menu, Component component, String label, String ariaLabel, boolean isChild) {
         if (isChild) {
-            component.getStyle().set("width", "var(--lumo-icon-size-s)");
-            component.getStyle().set("height", "var(--lumo-icon-size-s)");
             component.getStyle().set("margin-right", "var(--lumo-space-m)");
         }
 
