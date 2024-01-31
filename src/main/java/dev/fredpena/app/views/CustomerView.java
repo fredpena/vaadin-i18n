@@ -1,7 +1,6 @@
 package dev.fredpena.app.views;
 
 import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.HasLabel;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -20,7 +19,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
@@ -125,6 +123,7 @@ public class CustomerView extends VerticalLayout implements LocaleChangeObserver
 
     @Override
     public void localeChange(LocaleChangeEvent event) {
+
         firstName.setLabel(getTranslation(TranslationConstant.FIELD_FIRST_NAME));
         lastName.setLabel(getTranslation(TranslationConstant.FIELD_LAST_NAME));
         email.setLabel(getTranslation(TranslationConstant.FIELD_EMAIL));
@@ -144,12 +143,6 @@ public class CustomerView extends VerticalLayout implements LocaleChangeObserver
         return getTranslation(TranslationConstant.TITLE_PAGE_CUSTOMER);
     }
 
-    public static void notificationError(String msg) {
-        final Notification notification = new Notification();
-        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-
-        notification(notification, msg);
-    }
 
     public static void notificationSuccess(String msg) {
         final Notification notification = new Notification();
@@ -158,17 +151,6 @@ public class CustomerView extends VerticalLayout implements LocaleChangeObserver
         notification(notification, msg);
     }
 
-    public static void notificationError(ValidationException validationException) {
-        final Notification notification = new Notification();
-        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-
-        validationException.getFieldValidationErrors().forEach(err -> err.getMessage().ifPresent(msg2 -> {
-            String label = ((HasLabel) err.getBinding().getField()).getLabel();
-
-            notificationError(label != null ? label + " -> " + msg2 : msg2);
-        }));
-
-    }
 
     private static void notification(Notification notification, String msg) {
         notification.setDuration(3000);
